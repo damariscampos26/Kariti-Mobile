@@ -13,7 +13,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    EditText nome, email, sexo, cpf, senha, confirmarSenha;
+
+    EditText nome, email, senha, confirmarSenha;
     Button voltar, cadastro;
     ImageButton mostrarSenha, ocultarSenha, ocultarSenha2;
     BancoDados bancoDados;
@@ -26,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
         nome = findViewById(R.id.editTextNome);
         email = findViewById(R.id.editTextEmail);
-        sexo = findViewById(R.id.editTextSexo);
-        cpf = findViewById(R.id.editTextCpf);
         senha = findViewById(R.id.editTextPassword);
         confirmarSenha = findViewById(R.id.editTextConfirmPassword);
         voltar = findViewById(R.id.buttonVoltar);
@@ -39,16 +38,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String usernome = nome.getText().toString();
+                String emails = email.getText().toString();
                 String password = senha.getText().toString();
                 String repassword = confirmarSenha.getText().toString();
 
-                if(usernome.equals("")||password.equals("")||repassword.equals(""))
+                if(usernome.equals("")||password.equals("")||repassword.equals("")||emails.equals(""))
                     Toast.makeText(MainActivity.this, "Por favor preencher todos os campos!", Toast.LENGTH_SHORT).show();
                 else{
                     if(password.equals(repassword)){
                         Boolean checkuser = bancoDados.checkuser(usernome);
-                        if(checkuser==false){
-                            Boolean insert = bancoDados.insertData(usernome, password);
+                        Boolean checkemail = bancoDados.checkemail(emails);
+                        if(checkuser==false && checkemail==false){
+                            Boolean insert = bancoDados.insertData(usernome, password, emails);
                             if(insert==true){
                                 Toast.makeText(MainActivity.this, "Cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
@@ -108,9 +109,19 @@ public class MainActivity extends AppCompatActivity {
                 voltarTelaWelcome();
             }
         });
+        /*cadastro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mudarParaTelaSenha();
+            }
+        });*/
     }
     public void voltarTelaWelcome(){
         Intent intent = new Intent(this, WelcomeActivity.class);
+        startActivity(intent);
+    }
+    public void mudarParaTelaSenha(){
+        Intent intent = new Intent(this, CodSenhaActivity.class);
         startActivity(intent);
     }
 }
